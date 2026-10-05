@@ -69,6 +69,8 @@ make demo       # runs `poetry install` the first time, then
 make demo-cdn   # the script-tag version → http://localhost:8010
 ```
 
+![pihanga-remote demo: a shadcn UI driven from Python](docs/demo-screenshot.png)
+
 Without make, from `backend/`: `poetry install`, then `poetry run python -m
 uvicorn examples.transport:app --reload`.
 
