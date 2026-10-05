@@ -1,0 +1,2 @@
+import{n as e}from"./chunks/rolldown-runtime-CbXtAM7H.js";import{t}from"./chunks/client-CLBj9RPT.js";var n=/* @__PURE__ */ e(t(),1),r=n.default??n,i=r.createRoot,a=r.hydrateRoot,o=r.version;export{i as createRoot,r as default,a as hydrateRoot,o as version};
+//# sourceMappingURL=react-dom-client.js.map

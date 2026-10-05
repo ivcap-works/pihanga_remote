@@ -1,0 +1,4 @@
+# Keep the virtualenv next to the project (backend/.venv) so tools and the
+# Makefile targets can find it.
+[virtualenvs]
+in-project = true

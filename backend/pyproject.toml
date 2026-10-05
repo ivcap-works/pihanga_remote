@@ -1,0 +1,43 @@
+[project]
+name = "pihanga-remote"
+version = "0.1.0"
+description = "Drive a Pihanga card UI (prebuilt generic bundle) from Python via JSON-Patch over WebSocket"
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+keywords = ["pihanga", "ui", "fastapi", "websocket", "json-patch", "shadcn", "server-driven-ui"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: FastAPI",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: User Interfaces",
+]
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.29",
+    "pydantic>=2.6",
+    "jsonpatch>=1.33",
+]
+authors = [{ name = "Max Ott", email = "max.ott@data61.csiro.au" }]
+license = "MIT"
+
+[project.urls]
+Homepage = "https://github.com/ivcap-works/pihanga-remote"
+Repository = "https://github.com/ivcap-works/pihanga-remote"
+Documentation = "https://github.com/ivcap-works/pihanga-remote#readme"
+
+[tool.poetry]
+# The package directory contains the prebuilt JS bundles (static/, static_cdn/)
+# and the generated card proxies; Poetry ships every file inside the package
+# that is not VCS-ignored, so they end up in the wheel.
+packages = [{ include = "pihanga_remote" }]
+exclude = ["pihanga_remote/**/*.map"]   # source maps: ~7 MB, not needed at runtime
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8"
+httpx2 = ">=2.13"         # FastAPI/Starlette TestClient (Starlette >= 1.7 prefers httpx2 over httpx)
+playwright = ">=1.44"   # browser e2e tests; run `poetry run playwright install chromium` once
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

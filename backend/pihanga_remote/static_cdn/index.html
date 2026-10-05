@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pihanga</title>
+    <!--
+      Generic bootstrap page: no app JavaScript, no bundler.
+      Every URL below is versioned and immutable, so browsers (and CDNs such as
+      jsDelivr/unpkg, which serve npm packages at these paths) can cache it forever.
+      The import map pins ONE copy of the shared modules for all card libraries.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "/pkg/@pihanga2/runtime@0.1.0/react.js",
+          "react/jsx-runtime": "/pkg/@pihanga2/runtime@0.1.0/react-jsx-runtime.js",
+          "react-dom": "/pkg/@pihanga2/runtime@0.1.0/react-dom.js",
+          "react-dom/client": "/pkg/@pihanga2/runtime@0.1.0/react-dom-client.js",
+          "@pihanga2/core": "/pkg/@pihanga2/runtime@0.1.0/core.js",
+          "@pihanga2/shadcn": "/pkg/@pihanga2/shadcn@0.2.23/pihanga-shadcn.js",
+          "acme-cards": "/pkg/acme-cards@0.1.0/acme-cards.js"
+        }
+      }
+    </script>
+    <link rel="modulepreload" href="/pkg/@pihanga2/runtime@0.1.0/core.js" />
+    <link rel="modulepreload" href="/pkg/@pihanga2/shadcn@0.2.23/pihanga-shadcn.js" />
+    <link rel="stylesheet" href="/pkg/@pihanga2/shadcn@0.2.23/pihanga-shadcn.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import { startRemote } from "@pihanga2/core";
+      import "@pihanga2/shadcn"; // registers the shadcn cards
+      import "acme-cards"; // registers a third-party card library
+      startRemote({ log: new URLSearchParams(location.search).has("pilog") });
+    </script>
+  </body>
+</html>
