@@ -1,0 +1,16 @@
+# Minimal Pihanga app: Python only, no JavaScript tooling.
+[project]
+name = "my-app"
+version = "0.1.0"
+description = "A Pihanga UI driven from Python"
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "pihanga-remote>=0.1,<0.2",   # brings FastAPI, uvicorn, pydantic, the card proxies and the browser bundle
+]
+
+[tool.poetry]
+packages = [{ include = "my_app" }]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

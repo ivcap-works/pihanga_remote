@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "@pihanga2/shadcn/theme.css";
+@source "../node_modules/@pihanga2/shadcn/cards";
+@source "../node_modules/@pihanga2/shadcn/components";

@@ -1,0 +1,9 @@
+node_modules/
+runtime/dist/
+runtime/tools/.work/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+runtime/dist-browser/
+.venv/
+backend/dist/

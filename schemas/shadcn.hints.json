@@ -1,0 +1,14 @@
+{
+  "$comment": "Hand-written hints merged by the Python code generator. 'events' become the default `$events` policy of a card type (see runtime/src/protocol.ts EventPolicy): echo = optimistic local update of a prop from an event payload field until the backend acknowledges the event.",
+  "cards": {
+    "pi/text-field": { "events": { "onChanged": { "echo": { "value": "value" } } } },
+    "pi/input": { "events": { "onChanged": { "echo": { "value": "value" } } } },
+    "pi/text-area": { "events": { "onChanged": { "echo": { "value": "value" } } } },
+    "pi/switch": { "events": { "onChanged": { "echo": { "checked": "checked" } } } },
+    "pi/checkbox": { "events": { "onChanged": { "echo": { "checked": "checked" } } } },
+    "shad/slider": { "events": { "onChanged": { "echo": { "value": "value" }, "debounceMs": 100 } } },
+    "pi/select": { "events": { "onChanged": { "echo": { "value": "value" } } } },
+    "pi/toggle-group": { "events": { "onChanged": { "echo": { "value": "value" } } } },
+    "shad/tabs": { "events": { "onTabChanged": { "echo": { "value": "tabId" } } } }
+  }
+}

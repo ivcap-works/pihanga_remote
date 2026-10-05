@@ -1,0 +1,31 @@
+{
+  "library": "acme-cards",
+  "version": "0.1.0",
+  "generatedBy": "hand-written",
+  "cards": {
+    "acme/gauge": {
+      "declaration": "Gauge",
+      "module": "acme-cards",
+      "props": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "value": { "type": "number" },
+          "max": { "type": "number" },
+          "badgeCard": { "$ref": "#/definitions/PiCardRef", "description": "Optional card (any library) shown next to the gauge." }
+        }
+      },
+      "events": {
+        "onReset": {
+          "actionType": "acme/gauge/reset",
+          "payload": { "$ref": "#/definitions/AcmeGaugeResetEvent" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PiCardRef": { "type": "string" },
+    "AcmeGaugeResetEvent": { "type": "object", "properties": { "value": { "type": "number" } }, "required": ["value"] }
+  },
+  "problems": []
+}
