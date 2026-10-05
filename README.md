@@ -9,13 +9,6 @@ card UI entirely from Python: the browser loads one prebuilt generic bundle
 as a flat `{cardName: declaration}` map and pushes changes as JSON Patch
 ops, and app authors write Python only — no JS, no bundling, no Vite.
 
-## Table of contents
-
-- [Documentation](#documentation)
-- [Layout](#layout)
-- [Quick start (run the demo)](#quick-start-run-the-demo)
-- [Developing this repo](#developing-this-repo)
-
 ## Documentation
 
 - **[HOW_TO_USE.md](HOW_TO_USE.md)** — build an app on the published
@@ -28,22 +21,7 @@ ops, and app authors write Python only — no JS, no bundling, no Vite.
   machinery, how the typed card proxies are generated, the script-tag
   deployment model, and verification/findings.
 
-## Layout
 
-```
-runtime/        TypeScript: the lean browser runtime (store, patch reducer, <Card>, WebSocket
-                transport, stand-in for @pihanga2/core), the Vite builds for the single bundle
-                and for the shared script-tag runtime, and the card-catalogue extractor
-browser/        script-tag / import-map deployment: generic bootstrap page, the drop-in
-                browser build for the pihanga-shadcn repo, and an example third-party card
-                library written without a build step
-schemas/        card catalogues (JSON Schema of props and event payloads) and hand-written
-                event hints; input for the Python code generator
-backend/        the Python package `pihanga-remote` (Poetry project): session and diffing,
-                FastAPI server, code generator, the GENERATED card classes, both prebuilt
-                browser bundles, plus examples/ and tests/
-app-template/   a minimal app that depends on the published `pihanga-remote` package
-```
 
 ## Quick start (run the demo)
 
@@ -76,6 +54,23 @@ uvicorn examples.transport:app --reload`.
 
 See [HOW_TO_USE.md](HOW_TO_USE.md) to build your own app on the published
 package.
+
+## Layout
+
+```
+runtime/        TypeScript: the lean browser runtime (store, patch reducer, <Card>, WebSocket
+                transport, stand-in for @pihanga2/core), the Vite builds for the single bundle
+                and for the shared script-tag runtime, and the card-catalogue extractor
+browser/        script-tag / import-map deployment: generic bootstrap page, the drop-in
+                browser build for the pihanga-shadcn repo, and an example third-party card
+                library written without a build step
+schemas/        card catalogues (JSON Schema of props and event payloads) and hand-written
+                event hints; input for the Python code generator
+backend/        the Python package `pihanga-remote` (Poetry project): session and diffing,
+                FastAPI server, code generator, the GENERATED card classes, both prebuilt
+                browser bundles, plus examples/ and tests/
+app-template/   a minimal app that depends on the published `pihanga-remote` package
+```
 
 ## Developing this repo
 
