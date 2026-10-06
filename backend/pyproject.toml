@@ -1,6 +1,6 @@
 [project]
 name = "pihanga-remote"
-version = "0.1.0"
+version = "0.1.1"
 description = "Drive a Pihanga card UI (prebuilt generic bundle) from Python via JSON-Patch over WebSocket"
 readme = "README.md"
 requires-python = ">=3.10,<4.0"
