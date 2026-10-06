@@ -1,20 +1,22 @@
 # How to build an app with pihanga-remote
 
 This document is for app authors: building on the published `pihanga-remote`
-package, writing `build(session)`, choosing where backend work goes,
-embedding the server in an existing process, and publishing a new release.
+package, writing `build(session)`, choosing where backend work goes, and
+embedding the server in an existing process.
 
 For how the package works internally (browser runtime, wire protocol,
-codegen), see [DESIGN.md](DESIGN.md).
+codegen), see [DESIGN.md](DESIGN.md). For publishing a new `pihanga-remote`
+release to PyPI (maintaining this repo, not building on the package), see
+[README.md § Developing this repo](README.md#developing-this-repo).
 
 ## Table of contents
 
 - [Quick example](#quick-example)
 - [Building an app on the published package](#building-an-app-on-the-published-package)
 - [App options](#app-options)
+- [Icons](#icons)
 - [Where backend processing goes](#where-backend-processing-goes)
 - [Embedding the server: running uvicorn on its own thread](#embedding-the-server-running-uvicorn-on-its-own-thread)
-- [Publishing a new release to PyPI](#publishing-a-new-pihanga-remote-release-to-pypi)
 
 ## Quick example
 
@@ -141,6 +143,63 @@ app = create_app(build, AppOptions(
   stays a 404.
 * **Old keyword:** `create_app(build, bundle_dir=…)` still works but is
   deprecated.
+
+## Icons
+
+Any card field typed as an icon name takes a plain **string name** from a
+global icon registry, not a Python/JS class — e.g. `CollapsibleCard(icon=…)`,
+`Attachment(icon=…)`, `JsonViewer(copy_icon=…)`, `PageWithNavbar(icon_name=…)`,
+`FileDrop(icon=…)`, `ShadIcon(icon_name=…)`. The field is on the card itself
+for most cards, but `Button` is different: `Button(icon_label=…)` replaces
+the whole label with just an icon, while the icons shown before/after a
+text label are nested one level down, in `opts`:
+`Button(label="Delete", opts=PiButtonOpts(before_icon="trash"))`.
+`PiButtonOpts` (mirroring `@/registry/ui/button.tsx`, alongside
+`variant`/`size`/etc.) must be imported directly from
+`pihanga_remote.cards.shadcn` — it isn't re-exported via `*`.
+
+Pass the icon name as a string; if it isn't registered, the field is simply
+ignored, or the card falls back to a hard-coded default (e.g.
+`JsonViewer.copy_icon` falls back to `Copy`, `CollapsibleCard.icon` falls
+back to `ChevronsUpDown` — see each field's docstring in
+`pihanga_remote.cards.shadcn`).
+
+The **single bundle** (the default, `AppOptions(bundle="single")`) ships a
+curated set of 44 [Lucide](https://lucide.dev) icons, registered by name in
+`runtime/src/icons.ts` (and mirrored for the script-tag build in
+`browser/pihanga-shadcn/src/browser/icons.ts`):
+
+```
+plus, minus, x, check, down, chevron-down, chevron-up, chevron-left, chevron-right,
+user, users, save, load, file-up, file-down, trash, pencil, search, settings,
+refresh, info, warning, home, car, truck, star, heart, mail, calendar, clock,
+download, upload, external-link, mountain-snow, play, pause, stop, filter, menu,
+eye, eye-off, copy, log-in, log-out
+```
+
+For example `Button(opts=PiButtonOpts(before_icon="trash"))` renders
+Lucide's `Trash2`, and `before_icon="chevron-right"` renders `ChevronRight`
+— the string keys don't always match the Lucide component name 1:1, so
+check the list above (or `runtime/src/icons.ts`) rather than guessing from
+the Lucide docs.
+
+A generic bundle can't know in advance which icons an app will need, so
+only this curated set is included to keep the bundle small; registering
+every Lucide icon would work too, at a bundle-size cost (see [DESIGN.md §
+Findings and
+limitations](DESIGN.md#findings-and-limitations)).
+
+**Using an icon that isn't in the curated set:**
+- With the single bundle, there's no way to add icons from Python alone —
+  you'd need a custom bundle (out of scope for an app author; see
+  [DESIGN.md § Script-tag
+  deployment](DESIGN.md#script-tag-deployment-no-bundling-for-apps-or-card-libraries)).
+- With `AppOptions(bundle="script-tags")`, you *can* add more icons without
+  rebuilding anything: load an extra `<script type="module">` after the
+  shadcn card bundle that calls `registerIcon(name, Component)` (exported
+  from `@pihanga2/shadcn/cards/icons`) for whatever `lucide-react` icons (or
+  any other React component) you need — the registry is the global
+  `window._PihangaIcons`, so it's shared across every script on the page.
 
 ## Where backend processing goes
 
@@ -280,26 +339,3 @@ mechanism for safely submitting a coroutine from any thread to a given
 event loop and getting back a `concurrent.futures.Future` you can block on
 or ignore. Use it for any call into `hub.broadcast(fn)` or
 `session.update(fn)` made from outside the server's own thread.
-
-## Publishing a new `pihanga-remote` release to PyPI
-
-`pihanga-remote` is [on PyPI](https://pypi.org/project/pihanga-remote/); the
-first release shipped from `backend/pyproject.toml` as-is (package README,
-classifiers, authors, license and `[project.urls]` are already filled in).
-
-To ship a new version:
-1. Bump `version` in `backend/pyproject.toml`.
-2. Run `make publish` from the repo root. The `publish` target rebuilds the
-   generated parts (`bundle schema proxies`), runs the full test suite
-   (`test`), builds the wheel/sdist (`package`), and finally runs `poetry
-   publish` from `backend/`.
-   - Dry-run against TestPyPI first: `poetry config repositories.testpypi
-     https://test.pypi.org/legacy/` once, then `make publish
-     PUBLISH_REPO=testpypi`.
-   - Publish for real: `poetry config pypi-token.pypi <token>` once, then
-     `make publish`.
-3. Tag the release in git once the publish succeeds.
-
-Poetry leaves VCS-ignored files out of the package. `static/`, `static_cdn/`
-and `cards/*.py` must therefore **not** be git-ignored, or they silently
-disappear from the wheel.

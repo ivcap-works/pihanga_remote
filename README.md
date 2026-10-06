@@ -13,9 +13,8 @@ ops, and app authors write Python only — no JS, no bundling, no Vite.
 
 - **[HOW_TO_USE.md](HOW_TO_USE.md)** — build an app on the published
   `pihanga-remote` package: `build(session)`, cards and handlers,
-  `AppOptions`, where backend processing goes, embedding the server on its
-  own thread with thread-safe messaging, and publishing a new release to
-  PyPI.
+  `AppOptions`, where backend processing goes, and embedding the server on
+  its own thread with thread-safe messaging.
 - **[DESIGN.md](DESIGN.md)** — how it works internally: the browser
   runtime, the wire protocol, local echo, the Python session/diffing
   machinery, how the typed card proxies are generated, the script-tag
@@ -93,8 +92,28 @@ To build the script-tag deployment from a local `pihanga-shadcn` checkout:
 `make cdn SHADCN=../pihanga-shadcn`, then `make demo-cdn` (port 8010) and
 `make e2e-cdn`.
 
-For publishing a new `pihanga-remote` release to PyPI, see
-[HOW_TO_USE.md § Publishing a new pihanga-remote release to PyPI](HOW_TO_USE.md#publishing-a-new-pihanga-remote-release-to-pypi).
+### Publishing a new `pihanga-remote` release to PyPI
+
+`pihanga-remote` is [on PyPI](https://pypi.org/project/pihanga-remote/); the
+first release shipped from `backend/pyproject.toml` as-is (package README,
+classifiers, authors, license and `[project.urls]` are already filled in).
+
+To ship a new version:
+1. Bump `version` in `backend/pyproject.toml`.
+2. Run `make publish` from the repo root. The `publish` target rebuilds the
+   generated parts (`bundle schema proxies`), runs the full test suite
+   (`test`), builds the wheel/sdist (`package`), and finally runs `poetry
+   publish` from `backend/`.
+   - Dry-run against TestPyPI first: `poetry config repositories.testpypi
+     https://test.pypi.org/legacy/` once, then `make publish
+     PUBLISH_REPO=testpypi`.
+   - Publish for real: `poetry config pypi-token.pypi <token>` once, then
+     `make publish`.
+3. Tag the release in git once the publish succeeds.
+
+Poetry leaves VCS-ignored files out of the package. `static/`, `static_cdn/`
+and `cards/*.py` must therefore **not** be git-ignored, or they silently
+disappear from the wheel.
 
 For the internal design, the wire protocol, the codegen pipeline and what
 was found/verified while building this, see [DESIGN.md](DESIGN.md).
